@@ -12,9 +12,11 @@ function App() {
         if(action.payload == 'Error fetching images') {
           return {...state, images: ['Error fetching images'] };
         }
-        const images = action.payload?.data.results?.map(img=>img.urls.small);
+        const images = action.payload?.data.results?.map(img=>img.urls.full);
         console.log(images,action.payload);
-        
+        if(images.length == 0) {
+          return {...state, images: ['No images found'] };  // Return an empty array when no images are found
+        }
         return {...state, images: images};
       default:
         return state;
@@ -51,7 +53,8 @@ function App() {
           {
             state.images?.length > 0 && state.images?.map((image, index)=>(
               <div class="image">
-                <img key={index} src={image} alt="random image"/>
+                {image == 'Error fetching images' || image == 'No images found'?<p><span>ERROR 404</span><span>Images Not Found</span></p>:
+                <img key={index} src={image} alt="random image"/>}
               </div>  
             ))
           }
